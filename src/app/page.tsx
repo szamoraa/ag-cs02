@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AnimatedExample } from "@/components/AnimatedExample";
 
 export default function Home() {
   return (
@@ -58,6 +59,9 @@ export default function Home() {
           >
             Documentation
           </a>
+        </div>
+        <div className="w-full mt-8">
+          <AnimatedExample />
         </div>
       </main>
     </div>
