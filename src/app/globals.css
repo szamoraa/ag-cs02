@@ -1,8 +1,99 @@
+input.condition-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+input.condition-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #ededed;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+
+input.condition-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #ededed;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
 @import "tailwindcss";
 
+@font-face {
+  font-family: "ABC Repro Screen";
+  src: url("/Typography/ABC Repro/ABC Repro/ABCRepro-Screen-Trial.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ABC Repro";
+  src: url("/Typography/ABC Repro/ABC Repro/ABCRepro-Regular-Trial.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ABC Repro Mono";
+  src: url("/Typography/ABC Repro/ABC Repro Mono Variable/ABCReproMonoVariable-Trial.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Mono";
+  src: url("/Typography/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Mono";
+  src: url("/Typography/SpaceMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-abc-screen {
+  font-family: "ABC Repro Screen", var(--font-geist-sans), sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.font-abc-regular {
+  font-family: "ABC Repro", var(--font-geist-sans), sans-serif;
+}
+
+.font-abc-mono {
+  font-family: "Space Mono", var(--font-geist-mono), monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --canvas-bg: #111111;
+  --panel-bg: #151515;
+  --card-bg: #1a1a1a;
+  --border: #2a2a2a;
+  --text-primary: #ededed;
+  --text-secondary: #a0a0a0;
+  --glow: rgba(255, 255, 255, 0.05);
 }
 
 @theme inline {
@@ -12,15 +103,35 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* Dotted grid pattern */
+.dotted-grid {
+  background-image: radial-gradient(circle, #2a2a2a 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--panel-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
 }
