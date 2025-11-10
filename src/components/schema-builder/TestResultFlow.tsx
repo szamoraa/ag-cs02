@@ -1011,18 +1011,7 @@ function ConditionCard({ accentColor, config, onUpdate }: ConditionCardProps) {
         </div>
 
         {!isSaved && (
-          <div className="flex items-center justify-between gap-6 pt-2 pointer-events-auto">
-          <button
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              // Handle cancel - could close the card or reset
-            }}
-            onMouseDown={(event) => event.stopPropagation()}
-            className="font-abc-regular text-[11px] text-[#a0a0a0] hover:text-[#ededed] transition-colors cursor-pointer pointer-events-auto"
-          >
-            Cancel
-          </button>
+          <div className="flex justify-center pt-2 pointer-events-auto">
           <button
             type="button"
             onClick={(event) => {
@@ -1757,15 +1746,12 @@ function RecordActionCard({ accentColor, config, onUpdate }: RecordActionCardPro
 
         {/* Notes */}
         <div className="flex flex-col gap-[8px]">
-          <span className="font-abc-regular text-[11px] text-[#c7c7c7] tracking-[0.08em]">
-            Notes
-          </span>
           <input
             type="text"
             value={action.notes ?? ""}
             onChange={(event) => syncAction({ notes: event.target.value })}
             placeholder="Add context (weather, leaf condition, soil moisture)…"
-            className="mt-[6px] w-full rounded-[6px] border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-[12px] font-abc-regular text-[#ededed] focus:border-[#3b82f6] focus:outline-none"
+            className="w-full rounded-[6px] border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-[12px] font-abc-regular text-[#ededed] focus:border-[#3b82f6] focus:outline-none"
           />
         </div>
 
@@ -1780,7 +1766,7 @@ function RecordActionCard({ accentColor, config, onUpdate }: RecordActionCardPro
         </div>
 
         {!isSaved && (
-          <div className="flex items-center justify-end gap-3 pt-2 pointer-events-auto">
+          <div className="flex justify-center pt-2 pointer-events-auto">
             <button
               type="button"
               onClick={(event) => {

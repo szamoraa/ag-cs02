@@ -66,7 +66,7 @@ export function NodeCard({
       trendImage: "/Icons/Phosphate_map.svg",
       value: 36.7,
       unit: "PPM",
-      progress: 0.92,
+      progress: 1.0,
     },
     boron: {
       testName: "Block P4 (North Plot)",
