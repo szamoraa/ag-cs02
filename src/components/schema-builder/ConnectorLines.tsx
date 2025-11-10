@@ -27,33 +27,33 @@ export function ConnectorLines({
 
   return (
     <g className="pointer-events-none">
-      {/* Connector from source card bottom to link dot */}
-      <motion.line
-        x1={sourceBottomX}
-        y1={sourceBottomY}
-        x2={linkDotPos.x}
-        y2={linkDotPos.y}
-        stroke={accentColor}
-        strokeWidth={1.5}
-        strokeOpacity={opacity}
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 0.3 }}
-      />
+			{/* Connector from source card bottom to link dot */}
+			<motion.line
+				x1={sourceBottomX}
+				y1={sourceBottomY}
+				x2={linkDotPos.x}
+				y2={linkDotPos.y}
+				stroke={accentColor}
+				strokeWidth={1.5}
+				strokeOpacity={opacity}
+				initial={{ pathLength: 0 }}
+				animate={{ pathLength: 1 }}
+				transition={{ duration: 0.3 }}
+			/>
 
       {/* Connector from target card bottom to link dot */}
-      <motion.line
-        x1={targetBottomX}
-        y1={targetBottomY}
-        x2={linkDotPos.x}
-        y2={linkDotPos.y}
-        stroke={accentColor}
-        strokeWidth={1.5}
-        strokeOpacity={opacity}
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 0.3 }}
-      />
+			<motion.line
+				x1={targetBottomX}
+				y1={targetBottomY}
+				x2={linkDotPos.x}
+				y2={linkDotPos.y}
+				stroke={accentColor}
+				strokeWidth={1.5}
+				strokeOpacity={opacity}
+				initial={{ pathLength: 0 }}
+				animate={{ pathLength: 1 }}
+				transition={{ duration: 0.3 }}
+			/>
 
       {/* Vertical leader line from link dot to menu node */}
       {menuNodePos && (

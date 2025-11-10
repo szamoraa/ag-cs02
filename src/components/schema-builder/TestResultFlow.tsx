@@ -33,6 +33,8 @@ interface TestResultFlowProps {
   nodeRect: NodeRect; // Absolute position/size of the parent node card
   overlayRef: React.RefObject<HTMLDivElement>;
   showSummary?: boolean;
+	// When true, the initial root "+" node under the card is hidden
+	suppressPlusNode?: boolean;
 }
 
 type FlowStage = "condition" | "compare" | "record" | "notify";
@@ -68,6 +70,7 @@ export function TestResultFlow({
   nodeRect,
   overlayRef,
   showSummary = true,
+	suppressPlusNode = false,
 }: TestResultFlowProps) {
   const [openFrames, setOpenFrames] = useState<Set<string>>(new Set());
   const [overlayElement, setOverlayElement] = useState<HTMLElement | null>(null);
@@ -272,7 +275,7 @@ export function TestResultFlow({
             height="100%"
           >
           {/* Line from Phosphate card to plus button when condition card is closed */}
-          {!conditionOpen && !compareOpen && !recordOpen && !notifyOpen && (
+          {!suppressPlusNode && !conditionOpen && !compareOpen && !recordOpen && !notifyOpen && (
             <motion.line
               x1={nodeRect.left + nodeRect.width / 2}
               y1={nodeRect.bottom}
@@ -288,7 +291,7 @@ export function TestResultFlow({
           )}
 
           {/* Line from node to menu when menu is open */}
-          {!conditionOpen && !compareOpen && !recordOpen && !notifyOpen && activeMenu === "condition" && (
+          {!suppressPlusNode && !conditionOpen && !compareOpen && !recordOpen && !notifyOpen && activeMenu === "condition" && (
             <motion.line
               x1={firstNodePos.x}
               y1={firstNodePos.y}
@@ -526,7 +529,7 @@ export function TestResultFlow({
       )
     : null;
 
-  const plusButton = !(conditionOpen || compareOpen || recordOpen || notifyOpen) ? (
+	const plusButton = !suppressPlusNode && !(conditionOpen || compareOpen || recordOpen || notifyOpen) ? (
     <div
       className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center z-50"
       style={{ top: "100%" }}
@@ -664,7 +667,7 @@ function FlowNodeMenu({
   );
 }
 
-interface ConditionCardOverlayProps {
+export interface ConditionCardOverlayProps {
   position: { x: number; y: number };
   accentColor: string;
   config: TestResultConfig;
@@ -672,7 +675,7 @@ interface ConditionCardOverlayProps {
   onHeightChange: (height: number) => void;
 }
 
-function ConditionCardOverlay({
+export function ConditionCardOverlay({
   position,
   accentColor,
   config,

@@ -132,12 +132,9 @@ export default function SchemaBuilderPage() {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
-      <Header
-        schemaName={schema.name}
-        onApplyChanges={handleApplyChanges}
-      />
+      <Header schemaName={schema.name} />
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar currentView="schemas" />
+        <Sidebar currentView="action-space" />
         <div className="flex-1 flex overflow-hidden">
           <Canvas
             nodes={schema.nodes}

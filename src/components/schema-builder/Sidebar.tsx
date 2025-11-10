@@ -8,11 +8,11 @@ interface SidebarProps {
 
 export function Sidebar({ currentView = "schemas" }: SidebarProps) {
   const navItems = [
-    { id: "overview", label: "Overview", icon: "○" },
-    { id: "explore", label: "Explore", icon: "👥", badge: 3 },
-    { id: "schemas", label: "Schemas", icon: "▢" },
-    { id: "apps", label: "Apps", icon: "▦" },
-    { id: "settings", label: "Space Settings", icon: "⚙️" },
+    { id: "overview", label: "Overview" },
+    { id: "action-space", label: "Action Space", badge: 3 },
+    { id: "history", label: "History" },
+    { id: "apps", label: "Apps" },
+    { id: "settings", label: "Settings" },
   ];
 
   return (
@@ -20,45 +20,38 @@ export function Sidebar({ currentView = "schemas" }: SidebarProps) {
       {/* User Profile */}
       <div className="px-4 py-4 border-b border-[#1f1f1f]">
         <div className="rounded-[6px] border border-[#242424] bg-[#121212] px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#3b82f6]/20 flex items-center justify-center text-[#3b82f6] text-[12px] font-abc-regular">
-            F
+          <div className="w-10 h-10 flex-shrink-0 rounded-full bg-[#1d2b47] border border-[#2d3f63] flex items-center justify-center text-[#6c8dfc] text-[13px] font-abc-regular aspect-square">
+            R
           </div>
           <div className="flex-1">
             <div className="font-abc-regular text-[12px] text-white tracking-[0.02em]">
-              flo
+              Ronin
             </div>
             <div className="font-abc-screen text-[10px] text-[#8a8a8a] tracking-[0.08em]">
-              flo
+              ronin@robertsonlab.com
             </div>
-          </div>
-          <div className="flex items-center gap-1 text-[#5a5a5a] text-[11px]">
-            <span>›</span>
-            <span>{`{}`}</span>
           </div>
         </div>
       </div>
 
       {/* No Views Section */}
       <div className="px-4 py-4 border-b border-[#1f1f1f]">
-        <div className="rounded-[6px] border border-[#242424] bg-[#121212] px-4 py-3 space-y-2">
-          <div className="font-abc-screen text-[10px] uppercase tracking-[0.16em] text-[#7d7d7d]">
-            Views
-          </div>
-          <p className="font-abc-regular text-[11px] text-[#969696] leading-[1.5]">
-            Quickly access key records by creating saved views inside{" "}
-            <button className="text-[#87a5ff] hover:text-[#a5bdff] transition-colors">
-              Explore
-            </button>
-            .
-          </p>
-        </div>
+        <div className="space-y-2">
+					<div className="font-abc-screen text-[10px] uppercase tracking-[0.16em] text-[#7d7d7d]">
+						Views
+					</div>
+					<p className="font-abc-regular text-[11px] text-[#969696] leading-[1.5]">
+						Quickly access key records by creating saved views inside{" "}
+						<button className="text-[#87a5ff] hover:text-[#a5bdff] transition-colors">
+							Explore
+						</button>
+						.
+					</p>
+				</div>
       </div>
 
       {/* Navigation */}
       <div className="flex-1 py-3 space-y-2">
-        <div className="px-6 font-abc-screen text-[10px] uppercase tracking-[0.16em] text-[#6b6b6b]">
-          Navigation
-        </div>
         {navItems.map((item) => {
           const isActive = currentView === item.id;
           return (
@@ -69,11 +62,10 @@ export function Sidebar({ currentView = "schemas" }: SidebarProps) {
                 "flex items-center gap-3",
                 "cursor-pointer transition-colors",
                 isActive
-                  ? "bg-[#161616] border-[#2f2f2f] text-white shadow-[0_0_12px_rgba(59,130,246,0.12)]"
+                  ? "bg-[#161616] border-[#2f2f2f] text-white"
                   : "border-transparent text-[#8f8f8f] hover:border-[#2f2f2f] hover:text-[#d4d4d4]"
               )}
             >
-              <div className="text-[13px] text-[#5f5f5f]">{item.icon}</div>
               <div className="flex-1 font-abc-regular text-[11px] text-inherit tracking-[0.05em]">
                 {item.label}
               </div>
@@ -94,7 +86,7 @@ export function Sidebar({ currentView = "schemas" }: SidebarProps) {
             Workspace
           </div>
           <div className="font-abc-regular text-[11px] text-[#b5b5b5] mt-1 tracking-[0.04em]">
-            RONIN
+            Robertsonlab
           </div>
         </div>
       </div>

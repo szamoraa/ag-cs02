@@ -97,11 +97,40 @@ export interface CardLink {
   linkDotPosition: { x: number; y: number };
   menuNodePosition?: { x: number; y: number };
   menuOpen?: boolean;
+  combinedCondition?: CombinedConditionConfig;
 }
 
 export interface Schema {
   name: string;
   nodes: SchemaNode[];
   links?: CardLink[];
+}
+
+// Combined condition types (applies to a connection between multiple result nodes)
+export type CombinedLogic = "any" | "all";
+export type CombinedSeverity = "info" | "warning" | "critical";
+
+export interface CombinedThreshold {
+  nodeId: string;
+  analyteLabel: string;
+  direction: "above" | "below";
+  value: number;
+  unit: "PPM";
+}
+
+export interface CombinedConditionConfig {
+  logic: CombinedLogic;
+  thresholds: CombinedThreshold[]; // One per linked nutrient node
+  frequency:
+    | "on-new-result"
+    | "daily"
+    | "weekly"
+    | "biweekly"
+    | "monthly"
+    | "custom";
+  customDays?: number;
+  notificationChannels: NotificationChannel[];
+  recipients?: string;
+  severity: CombinedSeverity;
 }
 

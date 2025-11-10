@@ -14,6 +14,8 @@ interface NodeCardProps {
   onClick: (id: string) => void;
   onConfigChange?: (nodeId: string, config: TestResultConfig) => void;
   overlayRef: RefObject<HTMLDivElement>;
+	// When true, hide the root "+" node under this card (used when linked)
+	suppressRootPlusNode?: boolean;
 }
 
 export function NodeCard({
@@ -22,6 +24,7 @@ export function NodeCard({
   onClick,
   onConfigChange,
   overlayRef,
+	suppressRootPlusNode,
 }: NodeCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [localPosition, setLocalPosition] = useState<{ x: number; y: number } | null>(null);
@@ -178,7 +181,8 @@ export function NodeCard({
         }
         nodeRect={cardDimensions}
         overlayRef={overlayRef}
-        showSummary={!Boolean(analyteData)}
+				showSummary={!Boolean(analyteData)}
+				suppressPlusNode={Boolean(suppressRootPlusNode)}
       />
     ) : null;
 
@@ -284,6 +288,8 @@ export function NodeCard({
       </div>
     ) : null;
 
+  const cardIcon = getNodeIcon(node.type);
+
   const defaultCard = (
     <div className="relative">
       <div
@@ -299,7 +305,9 @@ export function NodeCard({
         }}
       >
         <div className="px-4 py-3 border-b border-[#2a2a2a] flex items-center gap-3">
-          <div className="text-lg">{getNodeIcon(node.type)}</div>
+          {cardIcon ? (
+            <div className="text-lg">{cardIcon}</div>
+          ) : null}
           <div className="flex-1">
             <div className="text-sm font-medium text-[#ededed]">{node.label}</div>
             <div className="text-xs text-[#666666] mt-0.5">{getDataType(node.type)}</div>
@@ -350,7 +358,7 @@ export function NodeCard({
 
 function getNodeIcon(type: string): string {
   const icons: Record<string, string> = {
-    "crop-type": "🌾",
+    "crop-type": "",
     "nitrate-result": "🧪",
     "phosphate-result": "🧪",
     "boron-result": "🧪",
@@ -362,14 +370,14 @@ function getNodeIcon(type: string): string {
     "toggle": "⚡",
     "followup-reminder": "⏰",
     "webhook-action": "🔗",
-    record: "📄",
+    record: "",
   };
-  return icons[type] || "📦";
+  return icons[type] || "";
 }
 
 function getDataType(type: string): string {
   const types: Record<string, string> = {
-    "crop-type": "MAP",
+    "crop-type": "New Crop",
     "nitrate-result": "NUMBER",
     "phosphate-result": "NUMBER",
     "boron-result": "NUMBER",
@@ -381,7 +389,7 @@ function getDataType(type: string): string {
     toggle: "BOOLEAN",
     "followup-reminder": "AUTOMATION",
     "webhook-action": "AUTOMATION",
-    record: "MAP",
+    record: "New Record",
   };
   return types[type] || "UNKNOWN";
 }

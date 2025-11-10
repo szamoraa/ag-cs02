@@ -11,6 +11,9 @@ interface LinkDotProps {
   onUnlink?: () => void;
   onHover?: (hovered: boolean) => void;
   accentColor?: string;
+	// When true and the dot is linked, primary click opens the menu (onLink)
+	// and "Remove link" is shown only on context-click.
+	linkedClickOpensMenu?: boolean;
 }
 
 export function LinkDot({
@@ -20,18 +23,30 @@ export function LinkDot({
   onUnlink,
   onHover,
   accentColor = "#3B82F6",
+	linkedClickOpensMenu = false,
 }: LinkDotProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showContextMenu, setShowContextMenu] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isLinked && onUnlink) {
-      setShowContextMenu(true);
+		if (isLinked) {
+			if (linkedClickOpensMenu) {
+				onLink();
+			} else if (onUnlink) {
+				setShowContextMenu(true);
+			}
     } else {
       onLink();
     }
   };
+
+	const handleContextMenu = (e: React.MouseEvent) => {
+		if (!isLinked || !onUnlink) return;
+		e.preventDefault();
+		e.stopPropagation();
+		setShowContextMenu(true);
+	};
 
   const handleRemoveLink = () => {
     if (onUnlink) {
@@ -57,6 +72,7 @@ export function LinkDot({
           pointerEvents: "auto",
         }}
         onClick={handleClick}
+				onContextMenu={handleContextMenu}
         onMouseEnter={() => {
           setIsHovered(true);
           onHover?.(true);

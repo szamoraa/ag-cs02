@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SchemaNode, TestResultConfig, CardLink } from "@/types/schema";
 import { ANALYTE_COLORS } from "@/lib/constants";
 import { NodeCard } from "./NodeCard";
+import { ConditionCardOverlay } from "./TestResultFlow";
+import { CombinedConditionOverlay } from "./CombinedConditionCard";
 import { LinkDot } from "./LinkDot";
 import { ConnectorLines } from "./ConnectorLines";
 import { cn } from "@/lib/utils";
@@ -42,6 +44,11 @@ export function Canvas({
   const [suppressLinkDetection, setSuppressLinkDetection] = useState(false);
   const [hoveredLinkDot, setHoveredLinkDot] = useState<string | null>(null);
   const [introDismissed, setIntroDismissed] = useState(false);
+  const [linkOverlay, setLinkOverlay] = useState<
+    | { type: "condition"; linkId: string; sourceNodeId: string }
+    | { type: "combined"; linkId: string }
+    | null
+  >(null);
   const panStartRef = useRef<{ x: number; y: number } | null>(null);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -191,17 +198,17 @@ export function Canvas({
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.div
-                className="rounded-full border border-[#2a2a2a] bg-[#101010]/90 backdrop-blur-sm p-10 shadow-[0_0_24px_rgba(33,69,255,0.1)]"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="pointer-events-none select-none"
               >
                 <Image
                   src="/Icons/Agrilo_Icon_White-06.svg"
                   alt="Agrilo"
-                  width={220}
-                  height={220}
+                  width={180}
+                  height={180}
                   priority
-                  className="w-[220px] h-[220px] opacity-90 pointer-events-none select-none"
+                  className="w-[180px] h-[180px] opacity-40"
                 />
               </motion.div>
             </motion.button>
@@ -310,6 +317,7 @@ export function Canvas({
                 onClick={onNodeClick}
                 onConfigChange={onConfigChange}
                 overlayRef={overlayRef}
+                suppressRootPlusNode={links.some((l) => l.sourceNodeId === node.id || l.targetNodeId === node.id)}
               />
             ))}
 
@@ -375,9 +383,135 @@ export function Canvas({
                     setHoveredLinkDot(hovered ? link.id : null);
                   }}
                   accentColor={sourceAccent}
+                  linkedClickOpensMenu={true}
                 />
               );
             })}
+
+            {/* Connection menus anchored to link dots */}
+            {links.map((link) => {
+              if (!link.menuOpen || !link.menuNodePosition) return null;
+              const left = link.menuNodePosition.x - 76; // ~153px width / 2
+              const top = link.menuNodePosition.y;
+              return (
+                <div
+                  key={`menu-${link.id}`}
+                  className="absolute z-[70]"
+                  style={{ left, top, pointerEvents: "auto" }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <div className="flex w-[153px] flex-col gap-[6px] rounded-[5px] border border-[#282828] bg-[#1a1a1a] p-[10px] shadow-xl">
+                    {[
+                      { id: "combined-condition", label: "Combined condition" },
+                      { id: "set-condition", label: "Set condition" },
+                      { id: "compare-trend", label: "Compare trend" },
+                      { id: "record-action", label: "Record action" },
+                      { id: "recommendation", label: "Recommendation", dashed: true },
+                    ].map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        className={cn(
+                          "h-[26px] w-full rounded-[2px] text-[10px] font-abc-regular text-white transition-colors tracking-[0.02em]",
+                          option.dashed
+                            ? "border border-dashed border-[#969696] bg-transparent text-[#d9d9d9]"
+                            : "border border-transparent bg-[#202020] hover:bg-[#242424]"
+                        )}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onLinkUpdate(link.id, { menuOpen: false });
+                          if (option.id === "set-condition") {
+                            setLinkOverlay({ type: "condition", linkId: link.id, sourceNodeId: link.sourceNodeId });
+                            // Initialize basic config if needed
+                            const source = nodes.find((n) => n.id === link.sourceNodeId);
+                            if (source && onConfigChange) {
+                              const nextConfig = {
+                                enabled: true,
+                                scheduleFollowUp: true,
+                                followUpFrequency: "weekly" as const,
+                                thresholdAlert: false,
+                                thresholdDirection: "above" as const,
+                                notifications: false,
+                              };
+                              onConfigChange(source.id, { ...(source.testConfig ?? {}), ...nextConfig });
+                            }
+                          } else if (option.id === "combined-condition") {
+                            setLinkOverlay({ type: "combined", linkId: link.id });
+                          }
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Overlay card for connection actions */}
+            {linkOverlay && (() => {
+              const link = links.find((l) => l.id === linkOverlay.linkId);
+              if (!link || !link.menuNodePosition) return null;
+              const overlayPos = { x: link.menuNodePosition.x - 124, y: link.menuNodePosition.y + 8 }; // center ~248px
+              if (linkOverlay.type === "condition") {
+                const sourceNode = nodes.find((n) => n.id === linkOverlay.sourceNodeId);
+                if (!sourceNode) return null;
+                const accent = sourceNode.analyteType ? ANALYTE_COLORS[sourceNode.analyteType] : "#3B82F6";
+                const config = sourceNode.testConfig ?? {
+                  enabled: true,
+                  scheduleFollowUp: true,
+                  followUpFrequency: "weekly" as const,
+                  thresholdAlert: false,
+                  thresholdDirection: "above" as const,
+                  notifications: false,
+                };
+                return (
+                  <ConditionCardOverlay
+                    position={overlayPos}
+                    accentColor={accent}
+                    config={config}
+                    onUpdate={(updates) => onConfigChange?.(sourceNode.id, { ...(sourceNode.testConfig ?? {}), ...updates })}
+                    onHeightChange={() => {}}
+                  />
+                );
+              }
+              // Combined condition
+              const source = nodes.find((n) => n.id === link.sourceNodeId);
+              const target = nodes.find((n) => n.id === link.targetNodeId);
+              if (!source || !target) return null;
+              // Units already validated on link creation; proceed
+              const accent = source.analyteType ? ANALYTE_COLORS[source.analyteType] : "#3B82F6";
+              const nutrients = [
+                {
+                  nodeId: source.id,
+                  analyteLabel: source.label,
+                  unit: "PPM" as const,
+                  defaultValue: typeof source.data?.value === "number" ? source.data.value : undefined,
+                },
+                {
+                  nodeId: target.id,
+                  analyteLabel: target.label,
+                  unit: "PPM" as const,
+                  defaultValue: typeof target.data?.value === "number" ? target.data.value : undefined,
+                },
+              ];
+              return (
+                <CombinedConditionOverlay
+                  position={overlayPos}
+                  accentColor={accent}
+                  nutrients={nutrients}
+                  initial={link.combinedCondition ?? null}
+                  onSave={(config) => {
+                    onLinkUpdate(link.id, { combinedCondition: config });
+                    setLinkOverlay(null);
+                    // Placeholder toast
+                    console.log("Combined condition saved. Agrilo will monitor these nutrients.");
+                  }}
+                  onCancel={() => setLinkOverlay(null)}
+                  onHeightChange={() => {}}
+                />
+              );
+            })()}
           </>
         )}
 

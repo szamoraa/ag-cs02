@@ -17,12 +17,6 @@ const CATEGORY_LABELS: Record<NodeCategory, string> = {
   automation: "Automation Fields",
 };
 
-const CATEGORY_ICONS: Record<NodeCategory, string> = {
-  relational: "🔗",
-  normal: "📦",
-  automation: "⚙️",
-};
-
 export function Palette({ onNodeAdd }: PaletteProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<NodeCategory>>(
     new Set(["relational", "normal", "automation"])
@@ -50,10 +44,12 @@ export function Palette({ onNodeAdd }: PaletteProps) {
   );
 
   return (
-    <div className="h-full bg-[#151515] border-l border-[#2a2a2a] flex flex-col">
+    <div className="h-full bg-[#0f0f0f] border-l border-[#1f1f1f] flex flex-col">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-[#2a2a2a]">
-        <div className="text-sm font-medium text-[#ededed]">Palette</div>
+      <div className="px-4 py-4 border-b border-[#1f1f1f]">
+        <div className="font-abc-screen text-[10px] uppercase tracking-[0.16em] text-[#6b6b6b]">
+          Resources
+        </div>
       </div>
 
       {/* Categories */}
@@ -63,22 +59,19 @@ export function Palette({ onNodeAdd }: PaletteProps) {
           const isExpanded = expandedCategories.has(category);
 
           return (
-            <div key={category} className="border-b border-[#2a2a2a]">
+            <div key={category} className="border-b border-[#1f1f1f]">
               {/* Category Header */}
               <button
                 onClick={() => toggleCategory(category)}
                 className={cn(
                   "w-full px-4 py-3 flex items-center justify-between",
-                  "hover:bg-[#1a1a1a] transition-colors",
+                  "hover:bg-[#121212] transition-colors",
                   "text-left"
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-base">{CATEGORY_ICONS[category]}</span>
-                  <span className="text-sm font-medium text-[#ededed]">
-                    {CATEGORY_LABELS[category]}
-                  </span>
-                </div>
+                <span className="text-[11px] font-abc-regular text-[#d4d4d4] tracking-[0.04em]">
+                  {CATEGORY_LABELS[category]}
+                </span>
                 <motion.div
                   animate={{ rotate: isExpanded ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
@@ -348,7 +341,9 @@ function PaletteItem({ node, onClick }: PaletteItemProps) {
           <span className="font-abc-screen text-[10px] text-[#c7c7c7] tracking-[0.02em]">
             {node.label}
           </span>
-          <div className="text-base">{node.icon}</div>
+          {node.icon ? (
+            <div className="text-base">{node.icon}</div>
+          ) : null}
         </div>
 
         {/* Bottom row - Data type */}
